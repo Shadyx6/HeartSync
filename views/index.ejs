@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartSync - Connect with Heart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      height: 100vh;
+      overflow: hidden !important;
+    }
+    .heart-sync-bg {
+      background-color: #FFC8DD;
+    }
+    .chat-box {
+      border: 2px solid #ff5f6d;
+      border-radius: 15px;
+      padding: 1rem;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .message-input {
+      border-radius: 20px;
+      border: 1px solid #ff5f6d;
+      background: #ffe6e6;
+    }
+    .video-call-btn, .voice-call-btn {
+      background: #ff5f6d;
+      color: white;
+      border-radius: 10px;
+      padding: 0.75rem 1.5rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease;
+    }
+    .video-call-btn:hover, .voice-call-btn:hover {
+      background: #cc4c5c;
+    }
+    .status-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      z-index: 999;
+    }
+    .status-overlay.active {
+      display: flex;
+    }
+    
+  </style>
+</head>
+<body class="heart-sync-bg text-white">
+
+  <div class="status-overlay" id="status-overlay">
+    <div id="status-message">Connecting...</div>
+  </div>
+
+  <div class="flex flex-col md:flex-row h-screen p-4">
+    
+    <div class="flex-1 flex flex-col md:mr-4">
+      <div id="chat" class="flex-1 bg-white text-gray-800 p-4 rounded-lg chat-box">
+        <div class="flex flex-col h-full">
+          <div class="flex-1 overflow-y-auto mb-4" id="chat-window">
+            <!-- Chat messages will be dynamically inserted here -->
+          </div>
+          <div class="flex items-center space-x-4">
+            <input type="text" placeholder="Type a message..." class="message-input flex-1 px-4 py-2">
+            <button class="bg-blue-500 text-white rounded-full px-4 py-2">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Local Video -->
+       <div class="vid-container hidden absolute w-[80vw] relative h-[90%] top-0 ">
+        <div id=" absolute remote-video-container" class="video-container h-[95%] w-full bg-black">
+            <video id="remote-vid" muted playsinline autoplay></video>
+          </div>
+          <div id="local-video-container" class="absolute video-container h-48 md:h-72 w-32 md:w-56 bg-red-300 top-[59%] md:top-[49.5%] right-0">
+            <video id="local-vid"  muted playsinline autoplay ></video>
+          </div>
+       </div>
+     
+      
+    </div>
+    
+    <div class="md:w-1/4 flex flex-col space-y-4">
+      <button onclick="initialize()" id="start-video-call" class="video-call-btn">Start Video Call</button>
+      <button id="start-voice-call" class="voice-call-btn">Start Voice Call</button>
+    </div>
+
+  </div>
+  
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
+  <script src="javascript/script.js"></script>
+
+</body>
+</html>
