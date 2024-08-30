@@ -36,9 +36,17 @@ io.on('connection', (socket) => {
             socket.broadcast.to(data.room).emit('messageReceived', {message: data.message, room: data.room})
         })
     })
+   socket.on('signalingMessage', (data) => {
+    // console.log(data.message, 'ENDS HERE')
+    socket.broadcast.to(data.room).emit('signalingMessage', data.message)
+   })
     socket.on('offerVideoCall', (room) => {
         console.log('offerVideoCall')
         socket.broadcast.to(room).emit('incomingVideoCall')
+    })
+    socket.on('acceptedCall', (room) => {
+        console.log(room)
+        socket.broadcast.to(room).emit('callAccepted')
     })
     socket.on('disconnect', () => {
         let user = waitingUsers.findIndex((value) => value.id === socket.id)
@@ -46,11 +54,7 @@ io.on('connection', (socket) => {
             waitingUsers.splice(user, 1)
         } 
     })
-  
-   socket.on('signalingMessage', (message) => {
-    console.log(message)
-    socket.broadcast.emit('signalingMessage', message)
-   })
+ 
 })
 
 app.use('/', indexRouter)

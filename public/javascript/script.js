@@ -9,11 +9,11 @@ socket.on('joinedRoom', (newRoom) => {
 })
 
 function sendMessage() {
-    const messageInput = document.querySelector('.message-input'); 
-    const message = messageInput.value.trim(); 
+    const messageInput = document.querySelector('.message-input');
+    const message = messageInput.value.trim();
 
     if (message !== "") {
-        appendMessage('You', message); 
+        appendMessage('You', message);
         console.log(room);
         socket.emit('chatMessage', { message, room });
         messageInput.value = '';
@@ -23,7 +23,7 @@ function sendMessage() {
 
 function receiveMessage() {
     socket.on('messageReceived', (data) => {
-    
+
         console.log(data)
         appendMessage('Stranger', data.message);
     });
@@ -45,7 +45,7 @@ function appendMessage(sender, message) {
             </div>
           </div>`;
 
-    
+
     chatWindow.innerHTML += container
     console.log(container)
     chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -63,7 +63,7 @@ receiveMessage();
 document.querySelector('.bg-blue-500').addEventListener('click', sendMessage);
 
 
-document.querySelector('.message-input').addEventListener('keydown', function(event) {
+document.querySelector('.message-input').addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
         sendMessage();
     }
@@ -82,43 +82,63 @@ let rtcSettings = {
 }
 
 const initialize = async () => {
-    local = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true
-    })
-    document.querySelector('#local-vid').srcObject = local
-    initiateOffer()
+    socket.on('signalingMessage', handleSignalingMessage)
+    try {
+        local = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true
+        })
+        document.querySelector('#local-vid').srcObject = local
+        initiateOffer()
+    } catch (error) {
+        console.log(error )
+    }
+   
 }
 
 const initiateOffer = async () => {
     await createPeerConnection();
-
+try {
     const offer = await peerConnection.createOffer()
     await peerConnection.setLocalDescription(offer)
+    console.log(peerConnection, offer)
+    socket.emit('signalingMessage',{room, message: JSON.stringify({ type: 'offer', offer,room })})
+} catch (error) {
+    console.log(error)
+}
 
-    socket.emit('signalingMessage', JSON.stringify({ type: 'offer', offer }))
 }
 
 const createPeerConnection = async () => {
     peerConnection = new RTCPeerConnection(rtcSettings)
     remote = new MediaStream()
     document.querySelector('#remote-vid').srcObject = remote
+    console.log(document.querySelector('#remote-vid').srcObject)
     document.querySelector('.vid-container').classList.toggle('hidden')
     document.querySelector('#chat').classList.add('hidden')
 
     local.getTracks().forEach((track) => {
         peerConnection.addTrack(track, local)
+        console.log(peerConnection, track)
     })
-
-    peerConnection.ontrack = (event) => {
-        console.log(event)
-        event.streams[0].getTracks().forEach((track) => remote.addTrack(track))
-        console.log(event)
+    try {
+        peerConnection.ontrack = (event) => {
+            event.streams[0].getTracks().forEach((track) => remote.addTrack(track))
+            console.log(event)
+        }
+    } catch (error) {
+        console.log(error)
     }
+ 
     peerConnection.onicecandidate = (event) => {
-        event.candidate &&
-            socket.emit('signalingMessage', JSON.stringify({ type: 'candidate', candidate: event.candidate }))
+        if(event.candidate){
+            socket.emit('signalingMessage', {room, message: JSON.stringify({type: 'candidate', candidate: event.candidate })})
+        }
+            
 
+    }
+    peerConnection.onconnectionstatechange = () => {
+        console.log('connection state:', peerConnection.connectionState)
     }
 
 }
@@ -128,32 +148,64 @@ const handleSignalingMessage = async (message) => {
     if (type === 'offer') handleOffer(offer);
     if (type === 'answer') handleAnswer(answer)
     if (type === 'candidate' && peerConnection) {
-        peerConnection.addIceCandidate(candidate)
+        try {
+           await peerConnection.addIceCandidate(candidate)
+            console.log(candidate)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
 }
 
 const handleOffer = async (offer) => {
-    await createPeerConnection()
-    await peerConnection.setRemoteDescription(offer)
-
-    const answer = await peerConnection.createAnswer()
-    await peerConnection.setLocalDescription(answer)
-    console.log('sending offer')
-    socket.emit('signalingMessage', JSON.stringify({ type: 'answer', answer }))
-}
-
-const handleAnswer = (answer) => {
-    if(!peerConnection.currentRemoteDescription) {
-        peerConnection.setRemoteDescription(answer)
+    try {
+        await createPeerConnection()
+        await peerConnection.setRemoteDescription(offer)
+    
+        const answer = await peerConnection.createAnswer()
+        await peerConnection.setLocalDescription(answer)
+        console.log(answer)
+        socket.emit('signalingMessage',{ room, message : JSON.stringify({type: 'answer', answer })})
+    } catch (error) {
+        
     }
-    console.log('answering')
+   
 }
+
+const handleAnswer = async (answer) => {
+    try {
+      await peerConnection.setRemoteDescription(answer)   
+        console.log(answer)
+    } catch (error) {
+        console.log(error)
+    }
+  
+}
+
 
 document.querySelector('.videoCall').addEventListener('click', () => {
     socket.emit('offerVideoCall', room)
+
 })
 
 socket.on('incomingVideoCall', () => {
-    alert('working')
+    document.querySelector('.incomingOverlay').classList.toggle('hidden')
+
+    })
+    document.querySelector('.decline').addEventListener('click', () => {
+        document.querySelector('.incomingOverlay').classList.toggle('hidden')
+        socket.emit('callDeclined', room)
+    })
+
+document.querySelector('.accept').addEventListener('click', () => {
+    document.querySelector('.incomingOverlay').classList.add('hidden')
+    initialize()
+    document.querySelector('.vid-container').classList.remove('hidden')
+    socket.emit('acceptedCall', room)
+})
+
+socket.on('callAccepted', () => {
+    initialize()
+    document.querySelector('.vid-container').classList.remove('hidden')
 })
