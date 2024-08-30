@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HeartSync - Connect with Heart</title>
   <link rel="stylesheet" href="/stylesheet/style.css">
+  <link rel="shortcut icon" href="https://img.freepik.com/free-photo/autumn-leaf-falling-revealing-intricate-leaf-vein-generated-by-ai_188544-9869.jpg" type="image/x-icon">
   <link
     href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
     rel="stylesheet"
@@ -13,7 +14,6 @@
     body {
       font-family: 'Arial', sans-serif;
       height: 100vh;
-      overflow: hidden !important;
     }
     .heart-sync-bg {
       background-color: #FFC8DD;
@@ -32,6 +32,9 @@
     }
     .video-call-btn, .voice-call-btn {
       background: #ff5f6d;
+      position: fixed;
+      bottom: 0
+      ;
       color: white;
       border-radius: 10px;
       padding: 0.75rem 1.5rem;
@@ -66,7 +69,14 @@
       text-align: center;
       font-size: large;
     }
-    
+    #chat-window{
+      max-height: 70vh !important;
+      overflow-y: auto !important;
+      scrollbar-width: 1px;
+    }
+    #chat-window::-webkit-scrollbar{
+      display: none;
+    }
   </style>
 </head>
 <body class="heart-sync-bg text-white">
@@ -82,21 +92,22 @@
       <div id="chat" class="flex-1 bg-white text-gray-800 p-4 rounded-lg chat-box">
 
         <div class="flex flex-col h-full w-full">
+          
           <div class="callers flex h-fit gap-6 justify-end">
-            <div class="videoCall p-3 rounded-full bg-blue-500">
-              <i class="ri-video-on-fill text-4xl text-[#F8E1E9] "></i>
+            <div onclick="initialize()" class="videoCall text-[#F8E1E9] hover:bg-[#F8E1E9] hover:text-blue-500 duration-200 ease-linear p-3 rounded-full bg-blue-500">
+              <i class="ri-video-on-fill text-3xl  "></i>
             </div>
-            <div class="voiceCall p-3 rounded-full bg-blue-500">
-              <i class="ri-phone-fill text-4xl text-[#F8E1E9] "></i>
+            <div class="voiceCall p-3 rounded-full  text-[#F8E1E9] duration-200 ease-linear hover:bg-[#F8E1E9] hover:text-blue-500 bg-blue-500">
+              <i class="ri-phone-fill text-3xl "></i>
             </div>
           </div>
          <p class="absolute empty">No one is here yet:(</p>
-          <div class="flex-1 overflow-y-auto mb-4" id="chat-window"> 
-          </div>
+          <div class="flex-1 overflow-y-auto mb-4 mt-4" id="chat-window"> 
+         </div>
 
           <div class="flex items-center space-x-4">
             <input type="text" placeholder="Type a message..." class="message-input flex-1 px-4 py-2">
-            <button class="bg-blue-500 text-[white] rounded-full px-4 py-2">Send</button>
+            <button onclick="sendMessage()" class="bg-blue-500 text-[white] rounded-full px-4 py-2">Send</button>
           </div>
         </div>
       </div>

@@ -25,12 +25,20 @@ io.on('connection', (socket) => {
             const room = uuidv4()
             socket.join(room)
             partner.join(room)
-            io.to(room).emit('joinedRoom')
+            io.to(room).emit('joinedRoom', room)
         } else{
             console.log('waiting')
             waitingUsers.push(socket)
             
         }
+        socket.on('chatMessage', (data) => {
+            console.log(data)
+            socket.broadcast.to(data.room).emit('messageReceived', {message: data.message, room: data.room})
+        })
+    })
+    socket.on('offerVideoCall', (room) => {
+        console.log('offerVideoCall')
+        socket.broadcast.to(room).emit('incomingVideoCall')
     })
     socket.on('disconnect', () => {
         let user = waitingUsers.findIndex((value) => value.id === socket.id)
@@ -38,6 +46,7 @@ io.on('connection', (socket) => {
             waitingUsers.splice(user, 1)
         } 
     })
+  
    socket.on('signalingMessage', (message) => {
     console.log(message)
     socket.broadcast.emit('signalingMessage', message)
