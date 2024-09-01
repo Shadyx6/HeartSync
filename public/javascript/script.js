@@ -186,6 +186,7 @@ const handleAnswer = async (answer) => {
 
 document.querySelector('.videoCall').addEventListener('click', () => {
     socket.emit('offerVideoCall', room)
+    document.querySelector('.ringing').classList.remove('hidden')
 
 })
 
@@ -202,10 +203,23 @@ document.querySelector('.accept').addEventListener('click', () => {
     document.querySelector('.incomingOverlay').classList.add('hidden')
     initialize()
     document.querySelector('.vid-container').classList.remove('hidden')
+    document.querySelector('.chat-box').style.display = 'none'
+ 
     socket.emit('acceptedCall', room)
 })
 
 socket.on('callAccepted', () => {
     initialize()
+    document.querySelector('.chat-box').style.display = 'none'
     document.querySelector('.vid-container').classList.remove('hidden')
+    document.querySelector('.ringing').classList.add('hidden')
 })
+
+{/* <div class="flex flex-col justify-between h-full w-full bg-tranparent hidden ">
+<div class="top p-4 bg-black bg-opacity-50 w-full h-fit mr-auto">
+<p>Stranger Connected</p>
+</div>
+<div class="bot flex justify-center mb-10 items-center">
+<button class=" bg-red-500 ease-linear duration-200 px-7 py-3 hover:bg-red-700 rounded-lg ">Hang up</button>
+</div>
+</div> */}

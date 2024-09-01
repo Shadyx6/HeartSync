@@ -14,6 +14,8 @@
     body {
       font-family: 'Arial', sans-serif;
       height: 100vh;
+      overflow: hidden !important;
+      padding-bottom: 10px;
     }
     .heart-sync-bg {
       background-color: #FFC8DD;
@@ -33,8 +35,7 @@
     .video-call-btn, .voice-call-btn {
       background: #ff5f6d;
       position: fixed;
-      bottom: 0
-      ;
+      bottom: 0;
       color: white;
       border-radius: 10px;
       padding: 0.75rem 1.5rem;
@@ -70,22 +71,36 @@
       font-size: large;
     }
     #chat-window{
-      max-height: 70vh !important;
+      max-height: 90vh !important;
       overflow-y: auto !important;
       scrollbar-width: 1px;
     }
     #chat-window::-webkit-scrollbar{
       display: none;
     }
+    @media screen and (min-width: 768px){
+      .container{
+        height: 100% !important;
+        width: 100% !important;
+      }
+    }
+    @media screen and (max-width: 768px){
+      .container{
+        height: 93% !important;
+        width: 100% !important;
+      }
+    }
   </style>
 </head>
 <body class="heart-sync-bg text-white">
-
+<div class="ringing flex justify-center absolute top-0 left-0 bg-black hidden items-center h-full w-full bg-opacity-50 ">
+  <p class="text-xl">Ringing Stranger for video call.....</p>
+</div>
   <div class="status-overlay" id="status-overlay">
     <div id="status-message">Connecting...</div>
   </div>
 
-  <div class="flex flex-col md:flex-row h-screen p-4">
+  <div class="flex flex-col md:flex-row container p-4">
 
     <div class="flex-1 flex flex-col md:mr-4">
       
@@ -95,7 +110,7 @@
           
           <div class="callers flex h-fit gap-6 justify-end">
             <div class="videoCall text-[#F8E1E9] hover:bg-[#F8E1E9] hover:text-blue-500 duration-200 ease-linear p-3 rounded-full bg-blue-500">
-              <i class="ri-video-on-fill text-3xl  "></i>
+              <i class="ri-video-on-fill text-3xl"></i>
             </div>
           </div>
          <p class="absolute empty hidden">No one is here yet:(</p>
@@ -107,12 +122,20 @@
             <button onclick="sendMessage()" class="bg-blue-500 text-[white] rounded-full px-4 py-2">Send</button>
           </div>
         </div>
-      </div>
-
+      </div>   
       <!-- Local Video -->
-       <div class="vid-container hidden absolute w-[80vw] relative h-[90%] top-0 ">
-        <div id=" absolute remote-video-container" class="video-container h-[95%] w-full bg-black">
-            <video class=" h-full w-full object-cover" id="remote-vid" muted playsinline autoplay></video>
+       <div class="vid-container absolute w-full relative h-full top-0 ">
+        <div id=" absolute remote-video-container" class="video-container h-full w-full">
+          <div class="flex absolute z-50 top-0 left-0 flex-col justify-between h-full bg-tranparent ">
+            <div class="top p-4 bg-black bg-opacity-50 w-full h-fit mr-auto">
+              <p>Stranger Connected</p>
+            </div>
+          <div class="bot flex justify-center mb-10 items-center">
+            <button class=" bg-red-500 ease-linear duration-200 px-7 py-3 hover:bg-red-700 rounded-lg ">Hang up</button>
+          </div>
+        </div>    
+          <video class="h-full w-full object-cover" id="remote-vid" muted playsinline autoplay></video>
+           
           </div>
           <div id="local-video-container" class="absolute video-container h-48 md:h-72 w-32 md:w-56 bg-red-300 top-[59%] md:top-[49.5%] right-0">
             <video class="h-full w-full object-cover" id="local-vid" muted playsinline autoplay ></video>
