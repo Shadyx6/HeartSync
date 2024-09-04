@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HeartSync - Connect with Heart</title>
   <link rel="stylesheet" href="/stylesheet/style.css">
-  <link rel="shortcut icon" href="https://img.freepik.com/free-photo/autumn-leaf-falling-revealing-intricate-leaf-vein-generated-by-ai_188544-9869.jpg" type="image/x-icon">
   <link
     href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
     rel="stylesheet"
@@ -14,7 +13,6 @@
     body {
       font-family: 'Arial', sans-serif;
       height: 100vh;
-      overflow: hidden !important;
       padding-bottom: 10px;
     }
     .heart-sync-bg {
@@ -70,11 +68,6 @@
       text-align: center;
       font-size: large;
     }
-    #chat-window{
-      max-height: 90vh !important;
-      overflow-y: auto !important;
-      scrollbar-width: 1px;
-    }
     #chat-window::-webkit-scrollbar{
       display: none;
     }
@@ -86,15 +79,26 @@
     }
     @media screen and (max-width: 768px){
       .container{
-        height: 93% !important;
+        height: 90% !important;
         width: 100% !important;
       }
+      #chat-window{
+        max-height: 60vh !important;
+      }
+    }
+    #chat-window{
+      max-height: 70vh !important;
+      overflow-y: auto !important;
+      scrollbar-width: 1px;
+    }
+    #chat-window::-webkit-scrollbar{
+      display: none;
     }
   </style>
 </head>
 <body class="heart-sync-bg text-white">
 <div class="ringing flex justify-center absolute top-0 left-0 bg-black hidden items-center h-full w-full bg-opacity-50 ">
-  <p class="text-xl">Ringing Stranger for video call.....</p>
+  <p class="text-xl text-white">Ringing Stranger for video call.....</p>
 </div>
   <div class="status-overlay" id="status-overlay">
     <div id="status-message">Connecting...</div>
@@ -113,7 +117,8 @@
               <i class="ri-video-on-fill text-3xl"></i>
             </div>
           </div>
-         <p class="absolute empty hidden">No one is here yet:(</p>
+         <p class="absolute empty">No one is here yet:(</p>
+         <p class="py-3 text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-rose-600 text-white rounded-lg w-fit px-6 opacity-0 non-empty">A stranger joined the room</p>
           <div class="flex-1 overflow-y-auto mb-4 mt-4" id="chat-window"> 
          </div>
 
@@ -124,21 +129,21 @@
         </div>
       </div>   
       <!-- Local Video -->
-       <div class="vid-container absolute w-full relative h-full top-0 ">
+       <div class="vid-container absolute w-full relative h-full top-0 hidden">
         <div id=" absolute remote-video-container" class="video-container h-full w-full">
-          <div class="flex absolute z-50 top-0 left-0 flex-col justify-between h-full bg-tranparent ">
+          <div class="flex absolute z-20 top-0  left-0 flex-col justify-between h-full w-full bg-tranparent ">
             <div class="top p-4 bg-black bg-opacity-50 w-full h-fit mr-auto">
-              <p>Stranger Connected</p>
+              <p class="text-end">Stranger Connected</p>
             </div>
-          <div class="bot flex justify-center mb-10 items-center">
-            <button class=" bg-red-500 ease-linear duration-200 px-7 py-3 hover:bg-red-700 rounded-lg ">Hang up</button>
+          <div class="bot flex justify-center z-50 mb-10 items-center">
+            <button class=" hangup bg-red-500 ease-linear duration-200 p-2 md:px-7 md:py-3 hover:bg-red-700 rounded-lg">Hang up</button>
           </div>
         </div>    
-          <video class="h-full w-full object-cover" id="remote-vid" muted playsinline autoplay></video>
+          <video class="h-full w-full object-cover" id="remote-vid" playsinline autoplay></video>
            
           </div>
-          <div id="local-video-container" class="absolute video-container h-48 md:h-72 w-32 md:w-56 bg-red-300 top-[59%] md:top-[49.5%] right-0">
-            <video class="h-full w-full object-cover" id="local-vid" muted playsinline autoplay ></video>
+          <div id="local-video-container" class="absolute cursor-grab video-container h-48 md:h-72 w-32 md:w-56 top-0 left-0 overflow-hidden rounded-lg z-50">
+            <video class="h-full w-full object-cover z-50" id="local-vid"muted playsinline autoplay></video>
           </div>
        </div>
      
@@ -148,7 +153,7 @@
         <div class="md:w-1/2 h-1/2 w-3/4 flex items-center justify-center gap-5">
          
           <div class="flex-col items-center justify-center">
-            <h1 class="text-black text-3xl mb-6">  Stranger is trying to call you.....</h1>
+            <h1 class="text-black text-3xl text-white mb-6">Stranger is trying to call you.....</h1>
             <div class="flex items-center justify-center gap-5">
               <button class="bg-green-700 p-4 rounded-xl text-white accept">
                 <i class="ri-video-on-fill text-xl"></i> Accept Call

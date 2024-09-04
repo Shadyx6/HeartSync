@@ -27,12 +27,12 @@ io.on('connection', (socket) => {
             partner.join(room)
             io.to(room).emit('joinedRoom', room)
         } else{
-            console.log('waiting')
+        
             waitingUsers.push(socket)
             
         }
         socket.on('chatMessage', (data) => {
-            console.log(data)
+         
             socket.broadcast.to(data.room).emit('messageReceived', {message: data.message, room: data.room})
         })
     })
@@ -41,11 +41,11 @@ io.on('connection', (socket) => {
     socket.broadcast.to(data.room).emit('signalingMessage', data.message)
    })
     socket.on('offerVideoCall', (room) => {
-        console.log('offerVideoCall')
+      
         socket.broadcast.to(room).emit('incomingVideoCall')
     })
     socket.on('acceptedCall', (room) => {
-        console.log(room)
+
         socket.broadcast.to(room).emit('callAccepted')
     })
     socket.on('disconnect', () => {
