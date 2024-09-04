@@ -4,8 +4,10 @@
   "description": "A video calling app",
   "main": "app.js",
   "scripts": {
-    "start" : "node app.js",
-    "build:css": "npx tailwindcss -i ./public/stylesheet/Tailwind.css -o ./public/stylesheet/style.css --watch"
+    "start": "node app.js",
+    "build:css": "npx tailwindcss -i ./public/stylesheet/Tailwind.css -o ./public/stylesheet/style.css",
+    "build": "npm run build:css",
+    "prestart": "npm run build"
   },
   "author": "",
   "license": "ISC",
