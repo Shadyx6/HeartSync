@@ -4,7 +4,7 @@
   "description": "A video calling app",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node app.js",
     "build:css": "npx tailwindcss -i ./public/stylesheet/Tailwind.css -o ./public/stylesheet/style.css --watch"
   },
   "author": "",
